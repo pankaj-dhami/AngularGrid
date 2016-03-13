@@ -20,7 +20,7 @@
         };
     });
 
-    app.controller('MainCtrl', function ($scope, $http, uiGridConstants, $compile) {
+    app.controller('MainCtrl', function ($scope, $http, uiGridConstants, $compile, $rootScope) {
 
         var data = [];
         $scope.pagingOptions = { pageSize: 10, currentPage: 1 };
@@ -29,14 +29,29 @@
         $scope.currPageSize = 0;
         $scope.gridFilter = [];
         $scope.appliedFilterNames = '';
+        $scope.resetGrid = function () {
 
-        var footerTemplate = "<div ng-if='loading'> Loading Data...</div>" +
-                   "<div ng-if='!loading'>Total Items : {{totalItems}} (Showing Items : {{currPageSize}})" +
-                   " <span ng-show='gridFilter.length'> ({{ gridFilter.length }}) Filters applied ( {{appliedFilterNames}} ) </span>  </div>";
+            $rootScope.$broadcast('resetGridFilter');
+            $scope.pagingOptions.currentPage = 1;
+            $scope.gridFilter = [];
+            getPage();
+        }
+        var footerTemplate = "<div title='Reload Grid' class='cursorhand glyphicon glyphicon-refresh' ng-click='resetGrid()'> </div>&nbsp;" +
+                            "<span ng-if='loading'> Loading Data...</span>" +
+                            "<span ng-if='!loading'>Total Items : {{totalItems}} (Showing Items : {{currPageSize}})" +
+                            "<span ng-show='gridFilter.length'> ({{ gridFilter.length }}) Filters applied </span>  </span>"
+
         var footerContent = $compile(footerTemplate)($scope);
 
         $scope.applyFilter = function (column, value, type, opt) {
 
+            if (type == 'multiselect') {
+
+                value = Enumerable.From(value)
+                            .Where(function (x) { return x.Selected == true })
+                            .Select(function (x) { return x.Text })
+                            .ToArray().join();
+            }
             var columnFilter = Enumerable.From($scope.gridFilter)
                 .Where(function (x) { return x.column == column })
                 .FirstOrDefault();
@@ -49,6 +64,7 @@
                     return;
                 }
                 else {
+
                     $scope.gridFilter.push({ column: column, value: value, opt: opt });
                 }
 
@@ -65,9 +81,6 @@
             if (!stopPropogetion) {
                 getPage();
             }
-
-
-
         }
 
 
@@ -123,11 +136,11 @@
 
                 $scope.gridApi = gridApi;
 
-                //gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
-                //    //debugger;
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    //debugger;
 
-                //    getPage(newPage, pageSize);
-                //});
+                    // getPage(newPage, pageSize);
+                });
 
                 gridApi.core.on.filterChanged($scope, function () {
                     var grid = this.grid;
@@ -180,8 +193,6 @@
                 $scope.loading = false;
 
             });
-
-
         }
 
         getPage();
@@ -202,7 +213,22 @@
             },
             controller: function ($scope) {
 
-                $scope.multiHeaderText = 'Select';
+                $scope.multiHeaderText = '';
+
+                $scope.$watch('rows', function (newValue, oldValue) {
+
+                    var count = Enumerable.From(newValue)
+                           .Where(function (x) { return x.Selected == true })
+                           .ToArray().length;
+                    if (count > 0) {
+                        $scope.multiHeaderText = ' (' + count + ') Selected';
+                    }
+                    else {
+                        $scope.multiHeaderText = ' Select';
+                    }
+
+
+                }, true);
 
                 $scope.clearSearch = function () {
                     $scope.searchText = '';
@@ -216,7 +242,7 @@
                         });
                     }
                     else if (type == 'all') {
-                       
+
                         $scope.rows.forEach(function (row) {
                             row.Selected = true
                         });
@@ -226,19 +252,29 @@
             templateUrl: '../App/Views/filterTemplate.html',
             link: function (scope, element, attr, controller) {
 
+                scope.$on('resetGridFilter', function (e) {
+                    if (scope.rows != undefined) {
+                        scope.rows.forEach(function (row) {
+                            row.Selected = false
+                        });
+
+                    }
+                    if (scope.value != undefined) {
+                        scope.value = '';
+                    }
+                });
+
                 $('[data-toggle=popover]').popover({
                     placement: 'bottom',
                     container: 'body',
                     html: true,
                     content: function () {
 
-                        var table = "<table class='table table-striped'><tr ng-repeat='row in rows | filter: searchText'>" +
-                                    "<td><input type='checkbox' class='checkbox' ng-model='row.Selected' /> </td>" +
-                                    "<td>{{row.Text}}</td>" +
-                                    " </tr></table>";
+                        $("[data-toggle=popover]").popover('hide');
 
-
-                        $(this).next('.popper-content').find('.filterTable').html(table)
+                        var tableTemplate = $templateCache.get('../App/Views/multiselectFilter.html');
+                        $(this).next('.popper-content').find('.filterTable').empty();
+                        $(this).next('.popper-content').find('.filterTable').html(tableTemplate)
 
                         return $compile($(this).next('.popper-content').html())(scope);
                     }

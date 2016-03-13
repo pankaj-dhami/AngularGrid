@@ -22,7 +22,8 @@ namespace AngularGrid.Controllers
         [OutputCache(NoStore = true, Duration = 0)]
         public JsonResult GetItems(int page, int size, List<GridFilter> filters)
         {
-            using (StreamReader r = new StreamReader(@"C:\Users\pankaj\documents\visual studio 2013\Projects\AngularGrid\AngularGrid\500_complex.json"))
+            var path = Server.MapPath("~") + "/500_complex.json";
+            using (StreamReader r = new StreamReader(path))
             {
                 string json = r.ReadToEnd();
                 List<GridDataModel> rawData = Newtonsoft.Json.JsonConvert.DeserializeObject<List<GridDataModel>>(json).ToList();
@@ -45,6 +46,22 @@ namespace AngularGrid.Controllers
                                 t = dashboardData.Where(p => p.age.ToString().Equals(item.value));
                                 query = query.Concat<GridDataModel>(t);
                                 break;
+                            case "email":
+                                if (item.value.IndexOf(",") > -1)
+                                {
+                                    foreach (string val in item.value.Split(','))
+                                    {
+                                        t = dashboardData.Where(p => p.email.ToString().Equals(val));
+                                        query = query.Concat<GridDataModel>(t); 
+                                    }
+                                }
+                                else
+                                {
+                                    t = dashboardData.Where(p => p.email.ToString().Equals(item.value));
+                                    query = query.Concat<GridDataModel>(t); 
+                                }
+                              
+                                break;
                         }
 
 
@@ -65,12 +82,16 @@ namespace AngularGrid.Controllers
         [HttpGet]
         public JsonResult GetEmailIds()
         {
-            var items = new[] { 
-            new {Text="pankaj",Value="1",Selected=true },
-            new {Text="dhami",Value="1",Selected=false }
-            };
+            var path = Server.MapPath("~") + "/500_complex.json";
+            using (StreamReader r = new StreamReader(path))
+            {
+                string json = r.ReadToEnd();
+                List<GridDataModel> rawData = Newtonsoft.Json.JsonConvert.DeserializeObject<List<GridDataModel>>(json).ToList();
 
-            return Json(items, JsonRequestBehavior.AllowGet);
+                var jsondata = (from item in rawData
+                                select new { Text = item.email, Value = item.email, Selected = false }).ToList().Distinct();
+                return Json(jsondata, JsonRequestBehavior.AllowGet);
+            }
         }
         public ActionResult About()
         {

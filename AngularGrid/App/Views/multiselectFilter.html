@@ -1,24 +1,7 @@
-﻿<div class="popper-content hide">
-           <div>
-               <div>
-                   <button class="helperButton" ng-click="select('all', $event );"
-                           ng-disabled="isDisabled" type="button">
-                       ✓&nbsp;&nbsp;All
-                   </button>
-                   <button class="helperButton" ng-click="select( 'none', $event );" ng-disabled="isDisabled" type="button">×&nbsp;&nbsp;None</button>
+﻿<table class='table table-striped'>
+    <tr ng-repeat='row in rows | filter: searchText'>
 
-
-               </div>
-               <div class="textboxfilter">
-                   <input type="text" ng-model="searchText.Text" placeholder="Search.." />
-                   <button ng-click="clearSearch()" class="inputclear glyphicon glyphicon-remove-circle"></button>
-               </div>
-           </div>
-           <table class="filterTable table table-striped">
-               <tr ng-repeat="row in rows | filter: searchText">
-                   <td><input type="checkbox" class="checkbox" value="{{row.Selected}}" /> </td>
-                   <td>{{row.Text}}</td>
-
-               </tr>
-           </table>
-       </div>
+        <td><input type='checkbox' ng-click="applyFilter({ column: column, value: rows, type: filterType, opt: filterOpt });" ng-model='row.Selected' /> </td>
+        <td><div title="{{row.Text}}">{{row.Text}}</div> </td>
+    </tr>
+</table>

@@ -54,3 +54,20 @@
     margin: 0 0 8px;
     text-align: center;
 }
+
+.filterTable {
+    height: 150px;
+    overflow-y: auto;
+}
+
+.ui-grid-icon-angle-down::before {
+    content: "썞";
+    position: absolute;
+    right: 1px;
+    top: 3px;
+}
+
+.cursorhand {
+    cursor: pointer;
+    cursor: hand;
+}
