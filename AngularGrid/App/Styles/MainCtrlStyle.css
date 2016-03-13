@@ -9,6 +9,7 @@
     display: inline-block;
     position: relative;
     width: 95%;
+    margin-bottom: 5px;
 }
 
 
@@ -34,10 +35,22 @@
         padding-left: 10px; /* button padding */
         width: 100%;
     }
-/*.popover {
-	position:relative;
-}*/
+
 .popover-medium {
-    position:relative;
+    /*position: relative;*/
     /*max-width: 250px;*/
+}
+
+.helperButton {
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    color: #666;
+    cursor: pointer;
+    display: inline;
+    font-size: 13px;
+    height: 26px;
+    line-height: 1.6;
+    margin: 0 0 8px;
+    text-align: center;
 }

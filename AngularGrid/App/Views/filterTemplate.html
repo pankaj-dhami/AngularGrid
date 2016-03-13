@@ -1,25 +1,16 @@
 ﻿
-
-
 <div class="text-center">
-    <style>
-        .popover {
-            position: relative;
-        }
-    </style>
+
     <div ng-show="filterType == 'textbox'" class="textboxfilter">
         <input type="hidden" ng-model="column" />
-        <input type="text" ng-model="value" ng-keyup="keyup()" placeholder="Search" />
+        <input type="text" ng-model="value" placeholder="Search" />
         <button ng-show="value.length" ng-click="applyFilter({ column:column,value:value,type:filterType,opt:filterOpt })" class="inputok glyphicon glyphicon-ok-circle"></button>
         <button ng-show="value.length" ng-click="value=''; applyFilter({ column: column, value: '', type: filterType, opt: filterOpt });" class="inputclear glyphicon glyphicon-remove-circle"></button>
     </div>
     <div ng-show="filterType == 'multiselect'" class="textboxfilter">
         <!--<div ng-dropdown-multiselect="" options="filterDataList" selected-model="filterDatamodel" extra-settings="example9settings"></div>-->
         <button class="popper" style="width:100%;" data-toggle="popover">{{multiHeaderText}}</button>
-        <div class="popper-content hide">
-            sdfsdf sdfsdfsdfsdfsdfsd fsdfsdfsfsd fsdfsdfsdfsdfsdfsfsdfsdf  sdfsdfsdfs ddddd
-            sdfsdf
-        </div>
+        
         <!--<div class="dropdown">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
                 Dropdown Example
@@ -31,6 +22,28 @@
                 <li><a href="#">JavaScript</a></li>
             </ul>
         </div>-->
+
+
+        <div class="popper-content hide">
+            <div>
+                <div>
+                    <button class="helperButton" ng-click="select('all', $event );"
+                            ng-disabled="isDisabled" type="button">
+                        ✓&nbsp;&nbsp;All
+                    </button>
+                    <button class="helperButton" ng-click="select( 'none', $event );" ng-disabled="isDisabled" type="button">×&nbsp;&nbsp;None</button>
+              
+
+                </div>
+                <div class="textboxfilter">
+                    <input type="text" ng-model="searchText.Text" placeholder="Search.." />
+                    <button ng-click="clearSearch()" class="inputclear glyphicon glyphicon-remove-circle"></button>
+                </div>
+            </div>
+            <div class="filterTable">
+               
+            </div>
+        </div>
 
     </div>
 </div>

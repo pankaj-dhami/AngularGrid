@@ -28,7 +28,7 @@ namespace AngularGrid.Controllers
                 List<GridDataModel> rawData = Newtonsoft.Json.JsonConvert.DeserializeObject<List<GridDataModel>>(json).ToList();
                 var dashboardData = rawData.AsQueryable();
                 var query = (new List<GridDataModel>()).AsQueryable();
-              
+
 
                 if (filters != null)
                 {
@@ -51,7 +51,7 @@ namespace AngularGrid.Controllers
                     }
                     rawData = query.ToList();
                 }
-               
+
 
                 int skip = (page - 1) * size;
                 var data = rawData.Skip(skip).Take(size).ToList();
@@ -62,6 +62,16 @@ namespace AngularGrid.Controllers
 
         }
 
+        [HttpGet]
+        public JsonResult GetEmailIds()
+        {
+            var items = new[] { 
+            new {Text="pankaj",Value="1",Selected=true },
+            new {Text="dhami",Value="1",Selected=false }
+            };
+
+            return Json(items, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

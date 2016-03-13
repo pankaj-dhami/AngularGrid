@@ -125,6 +125,7 @@
     <Content Include="App\Controller\MainCtrl.js" />
     <Content Include="App\Styles\MainCtrlStyle.css" />
     <Content Include="App\Views\filterTemplate.html" />
+    <Content Include="App\Views\multiselectFilter.html" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\ui-bootstrap-csp.css" />

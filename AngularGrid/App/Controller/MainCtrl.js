@@ -1,7 +1,10 @@
 ﻿(function () {
 
     var app = angular.module('myApp', ["ui.bootstrap", 'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.pagination', 'ui.grid.selection', 'angularjs-dropdown-multiselect']);
+    app.run(function ($templateRequest) {
+        $templateRequest('../App/Views/multiselectFilter.html')
 
+    });
     app.filter('mapGender', function () {
         var genderHash = {
             1: 'male',
@@ -67,13 +70,6 @@
 
         }
 
-        var myHeaderCellTemplate = '<div class="ngHeaderSortColumn {{col.headerClass}}" ng-style="{cursor: col.cursor}" ng-class="{ ngSorted: !noSortVisible }">' +
-                               '<div ng-click="col.sort($event)" ng-class="\'colt\' + col.index" class="ngHeaderText">{{col.displayName}}</div>' +
-                               '<div class="ngSortButtonDown" ng-show="col.showSortButtonDown()"></div>' +
-                               '<div class="ngSortButtonUp" ng-show="col.showSortButtonUp()"></div>' +
-                               '<div class="ngSortPriority">{{col.sortPriority}}</div>' +
-                             '</div>' +
-                             '<div ng-show="col.resizable" class="ngHeaderGrip" ng-click="col.gripClick($event)" ng-mousedown="col.gripOnMouseDown($event)"></div>';
 
         $scope.gridOptions = {
 
@@ -110,7 +106,7 @@
                             name: "email",
                             field: 'email', width: '30%',
                             filterHeaderTemplate:
-                                 $compile("<filter-template column='email' filter-type='multiselect' filter-opt='cn' apply-filter='applyFilter(column,value,type,opt)'> </filter-template>")
+                                 $compile("<filter-template column='email' url='/Home/GetEmailIds' filter-type='multiselect' filter-opt='cn' apply-filter='applyFilter(column,value,type,opt)'> </filter-template>")
                                  ($scope)
 
                         },
@@ -118,7 +114,7 @@
                           field: 'gender',
                           cellFilter: 'mapGender',
                           filterHeaderTemplate:
-                                 $compile("<filter-template column='gender' filter-type='multiselect' filter-opt='cn' apply-filter='applyFilter(column,value,type,opt)'> </filter-template>")
+                                 $compile("<filter-template column='gender' url='/Home/GetEmailIds' filter-type='multiselect' filter-opt='cn' apply-filter='applyFilter(column,value,type,opt)'> </filter-template>")
                                  ($scope)
                       }
             ],
@@ -192,7 +188,7 @@
 
     });
 
-    app.directive('filterTemplate', function () {
+    app.directive('filterTemplate', function ($compile, $http, $templateCache) {
 
         return {
 
@@ -202,46 +198,58 @@
                 applyFilter: '&',
                 column: '@',
                 filterType: '@',
-                filterOpt: '@'
+                filterOpt: '@',
             },
             controller: function ($scope) {
 
-                $scope.keyup = function (e) {
-
-                }
-
-                $scope.filterDataList = [{ text: "pankaj", value: 1, selected: false }, { text: "dhami", value: 2, selected: false }];
                 $scope.multiHeaderText = 'Select';
-                $scope.filterDatamodel = [];
 
-                $scope.example9settings = { enableSearch: true, externalIdProp: '' };
+                $scope.clearSearch = function () {
+                    $scope.searchText = '';
+                };
 
+                $scope.select = function (type, $event) {
 
+                    if (type == 'none') {
+                        $scope.rows.forEach(function (row) {
+                            row.Selected = false
+                        });
+                    }
+                    else if (type == 'all') {
+                       
+                        $scope.rows.forEach(function (row) {
+                            row.Selected = true
+                        });
+                    }
+                }
             },
             templateUrl: '../App/Views/filterTemplate.html',
             link: function (scope, element, attr, controller) {
-
-                //$('.popper').popover({
-                //    placement: 'bottom',
-                //    container: 'body',
-                //    html: true,
-                //    content: function () {
-                //        return $(this).next('.popper-content').html();
-                //    },
-
-                //    template: '<div class="popover popover-medium"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-
-                //});
 
                 $('[data-toggle=popover]').popover({
                     placement: 'bottom',
                     container: 'body',
                     html: true,
                     content: function () {
-                        return $(this).next('.popper-content').html();
-                    }
 
+                        var table = "<table class='table table-striped'><tr ng-repeat='row in rows | filter: searchText'>" +
+                                    "<td><input type='checkbox' class='checkbox' ng-model='row.Selected' /> </td>" +
+                                    "<td>{{row.Text}}</td>" +
+                                    " </tr></table>";
+
+
+                        $(this).next('.popper-content').find('.filterTable').html(table)
+
+                        return $compile($(this).next('.popper-content').html())(scope);
+                    }
                 });
+                if (attr.filterType == 'multiselect') {
+                    $http.get(attr.url).success(function (response) {
+
+                        scope.rows = response;
+                        console.log('list data loaded')
+                    });
+                }
 
                 $('body').on('click', function (e) {
                     //only buttons

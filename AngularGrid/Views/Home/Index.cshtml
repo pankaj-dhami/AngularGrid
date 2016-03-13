@@ -28,4 +28,27 @@
       
     </div>
 
+    <div id="multifiltertemplate" class="popper-content hide">
+        <div>
+            <div>
+                <button class="helperButton" ng-click="select('all', $event );"
+                        ng-disabled="isDisabled" type="button">
+                    ✓&nbsp;&nbsp;All
+                </button>
+                <button class="helperButton" ng-click="select( 'none', $event );" ng-disabled="isDisabled" type="button">×&nbsp;&nbsp;None</button>
+                <!--<button class="helperButton" ng-click="select( 'reset', $event );" ng-disabled="isDisabled" type="button">↶&nbsp;&nbsp;Submit</button>-->
+
+            </div>
+            <div class="textboxfilter">
+                <input type="text" ng-model="search" placeholder="Search.." />
+                <button ng-click="clearSearch()" class="inputclear glyphicon glyphicon-remove-circle"></button>
+            </div>
+        </div>
+        <table class="filterTable table table-striped">
+            <tr ng-repeat="row in [{ Selected:false,Text:'pan'},{ Selected:false,Text:'dhami'}]">
+                <td><input type="checkbox" ng-model="row.Selected" /> </td>
+                <td>{{row.Text}}</td>
+            </tr>
+        </table>
+    </div>
 </body>
