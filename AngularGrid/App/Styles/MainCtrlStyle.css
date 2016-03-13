@@ -1,0 +1,43 @@
+﻿.myGrid {
+    width: 80%;
+    height: 425px;
+}
+
+.textboxfilter {
+    background-color: white;
+    border: 1px solid #d4d4d4;
+    display: inline-block;
+    position: relative;
+    width: 95%;
+}
+
+
+    .textboxfilter input,
+    .textboxfilter button {
+        background-color: transparent;
+        border: 0;
+    }
+
+    .textboxfilter .inputclear {
+        position: absolute;
+        right: 0;
+        top: 3px;
+    }
+
+    .textboxfilter .inputok {
+        position: absolute;
+        right: 20px;
+        top: 3px;
+    }
+
+    .textboxfilter input {
+        padding-left: 10px; /* button padding */
+        width: 100%;
+    }
+/*.popover {
+	position:relative;
+}*/
+.popover-medium {
+    position:relative;
+    /*max-width: 250px;*/
+}

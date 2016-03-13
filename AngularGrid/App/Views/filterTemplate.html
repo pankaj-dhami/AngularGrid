@@ -1,0 +1,36 @@
+﻿
+
+
+<div class="text-center">
+    <style>
+        .popover {
+            position: relative;
+        }
+    </style>
+    <div ng-show="filterType == 'textbox'" class="textboxfilter">
+        <input type="hidden" ng-model="column" />
+        <input type="text" ng-model="value" ng-keyup="keyup()" placeholder="Search" />
+        <button ng-show="value.length" ng-click="applyFilter({ column:column,value:value,type:filterType,opt:filterOpt })" class="inputok glyphicon glyphicon-ok-circle"></button>
+        <button ng-show="value.length" ng-click="value=''; applyFilter({ column: column, value: '', type: filterType, opt: filterOpt });" class="inputclear glyphicon glyphicon-remove-circle"></button>
+    </div>
+    <div ng-show="filterType == 'multiselect'" class="textboxfilter">
+        <!--<div ng-dropdown-multiselect="" options="filterDataList" selected-model="filterDatamodel" extra-settings="example9settings"></div>-->
+        <button class="popper" style="width:100%;" data-toggle="popover">{{multiHeaderText}}</button>
+        <div class="popper-content hide">
+            sdfsdf sdfsdfsdfsdfsdfsd fsdfsdfsfsd fsdfsdfsdfsdfsdfsfsdfsdf  sdfsdfsdfs ddddd
+            sdfsdf
+        </div>
+        <!--<div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                Dropdown Example
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="#">HTML</a></li>
+                <li><a href="#">CSS</a></li>
+                <li><a href="#">JavaScript</a></li>
+            </ul>
+        </div>-->
+
+    </div>
+</div>
